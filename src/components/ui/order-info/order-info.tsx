@@ -11,6 +11,11 @@ import { OrderStatus } from '@components';
 
 export const OrderInfoUI: FC<OrderInfoUIProps> = memo(({ orderInfo }) => (
   <div className={styles.wrap}>
+    {!orderInfo.background && (
+      <p
+        className={`${styles.number} text text_type_main-medium pt-15 pb=6`}
+      >{`#${orderInfo.number}`}</p>
+    )}
     <h3 className={`text text_type_main-medium  pb-3 pt-10 ${styles.header}`}>
       {orderInfo.name}
     </h3>

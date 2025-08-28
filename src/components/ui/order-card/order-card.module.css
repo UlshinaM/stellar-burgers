@@ -1,3 +1,21 @@
+@keyframes fadeOutShadow {
+  from {
+    box-shadow:
+      0 0 16px 8px #3333FF40,
+      0 0 8px 8px #3333FF40,
+      0 4px 32px 0 #3333FF80;
+      border-radius: 40px;
+  }
+  to {
+    box-shadow: none;
+    border-radius: 40px;
+  }
+}
+
+.newOrder {
+  animation: fadeOutShadow 4s forwards;
+}
+
 .ingredients {
   display: flex;
   padding: 0;

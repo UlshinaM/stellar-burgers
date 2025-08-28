@@ -28,6 +28,9 @@ export const refreshToken = (): Promise<TRefreshResponse> =>
     .then((res) => checkResponse<TRefreshResponse>(res))
     .then((refreshData) => {
       if (!refreshData.success) {
+        if (localStorage.getItem('isAuthorized')) {
+          localStorage.removeItem('isAuthorized');
+        }
         return Promise.reject(refreshData);
       }
       localStorage.setItem('refreshToken', refreshData.refreshToken);

@@ -2,20 +2,22 @@ import { FC, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useLocation, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {
+  getIngredientsSelector,
+  getOrdersSelector
+} from '../../services/appSlice';
 
 export const OrderInfo: FC = () => {
+  const { number } = useParams();
+  const location = useLocation();
   /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const orderData = useSelector(getOrdersSelector).find(
+    (order) => order.number.toString() === number
+  );
 
-  const ingredients: TIngredient[] = [];
+  const ingredients: TIngredient[] = useSelector(getIngredientsSelector);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -55,7 +57,8 @@ export const OrderInfo: FC = () => {
       ...orderData,
       ingredientsInfo,
       date,
-      total
+      total,
+      background: location.state?.background
     };
   }, [orderData, ingredients]);
 
