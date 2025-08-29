@@ -20,14 +20,9 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
-import {
-  getFeeds,
-  getIngredients,
-  getUser,
-  getUserOrders
-} from '../../services/appSlice';
+import { getIngredients, getUser } from '../../services/appSlice';
 import { ProtectedRoute } from '../ProtectedRoute/ProtectedRoute';
 
 const App = () => {
@@ -38,9 +33,7 @@ const App = () => {
   useEffect(() => {
     if (localStorage.getItem('isAuthorized')) {
       dispatch(getUser());
-      dispatch(getUserOrders());
     }
-    dispatch(getFeeds());
     dispatch(getIngredients());
   }, []);
   return (

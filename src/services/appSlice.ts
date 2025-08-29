@@ -1,6 +1,7 @@
 import {
   getFeedsApi,
   getIngredientsApi,
+  getOrderByNumberApi,
   getOrdersApi,
   getUserApi,
   loginUserApi,
@@ -24,7 +25,10 @@ type TConstructorItems = {
 interface IState {
   isAuthorized: boolean;
   isLoading: boolean; //Отвечает за прелоадер, если данные еще не загрузились с сервера
+  isUserOrdersLoading: boolean;
+  isFeedsLoading: boolean;
   isRegistred: boolean;
+  isIngredientsLoading: boolean;
   ingredients: TIngredient[];
   constructorItems: TConstructorItems; //Объект с информацией о бургере в заказе
   orders: TOrder[]; //Все заказы, которые можно посмотреть в ленте
@@ -40,6 +44,9 @@ interface IState {
 const initialState: IState = {
   isAuthorized: false,
   isLoading: false,
+  isUserOrdersLoading: false,
+  isIngredientsLoading: false,
+  isFeedsLoading: false,
   isRegistred: false,
   ingredients: [],
   constructorItems: { bun: undefined, ingredients: [] },
@@ -80,28 +87,28 @@ const appSlice = createSlice({
     builder
       .addCase(getIngredients.pending, (state) => {
         state.error = undefined;
-        state.isLoading = true;
+        state.isIngredientsLoading = true;
       })
       .addCase(getIngredients.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isIngredientsLoading = false;
         state.ingredients = action.payload;
       })
       .addCase(getIngredients.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isIngredientsLoading = false;
         state.error = action.error.message;
       })
       .addCase(getFeeds.pending, (state) => {
         state.error = undefined;
-        state.isLoading = true;
+        state.isFeedsLoading = true;
       })
       .addCase(getFeeds.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isFeedsLoading = false;
         state.orders = action.payload.orders;
         state.ordersTotal = action.payload.total;
         state.ordersTotalToday = action.payload.totalToday;
       })
       .addCase(getFeeds.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isFeedsLoading = false;
         state.error = action.error.message;
       })
       .addCase(postRegisterUser.fulfilled, (state, action) => {
@@ -203,34 +210,53 @@ const appSlice = createSlice({
       })
       .addCase(getUserOrders.pending, (state) => {
         state.error = undefined;
-        state.isLoading = true;
+        state.isUserOrdersLoading = true;
       })
       .addCase(getUserOrders.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isUserOrdersLoading = false;
         if (action.payload) {
           state.userOrders = action.payload;
         }
       })
       .addCase(getUserOrders.rejected, (state, action) => {
+        state.isUserOrdersLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(getOrderByNumber.pending, (state) => {
+        state.error = undefined;
+        state.isLoading = true;
+      })
+      .addCase(getOrderByNumber.fulfilled, (state, action) => {
+        state.isLoading = false;
+        if (action.payload) {
+          state.orders = action.payload;
+        }
+      })
+      .addCase(getOrderByNumber.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
   }
 });
 
-export const getIngredients = createAsyncThunk('ingredients/getAll', async () =>
-  getIngredientsApi()
+export const getIngredients = createAsyncThunk(
+  'ingredients/getAll',
+  getIngredientsApi
 );
 
-export const getFeeds = createAsyncThunk('feeds/getAll', async () =>
-  getFeedsApi()
-); //все закакзы, без регистрации, для страницы Лента заказов
+export const getFeeds = createAsyncThunk('feeds/getAll', getFeedsApi); //все закакзы, без регистрации, для страницы Лента заказов
 
-export const getUserOrders = createAsyncThunk('orders/getAll', async () =>
-  getOrdersApi()
-); //закаказы авторизован
+export const getUserOrders = createAsyncThunk('orders/getAll', getOrdersApi); //закаказы авторизован
 
-export const getUser = createAsyncThunk('user/get', async () => getUserApi());
+export const getUser = createAsyncThunk('user/get', getUserApi);
+
+export const getOrderByNumber = createAsyncThunk(
+  'feed/byNember',
+  async (number: number) => {
+    const orderData = await getOrderByNumberApi(number);
+    if (orderData.success) return orderData.orders;
+  }
+);
 
 export const postRegisterUser = createAsyncThunk(
   'user/register',
@@ -313,6 +339,11 @@ export const getIsAuthorized = (state: RootState) => state.isAuthorized;
 export const getIsRegistred = (state: RootState) => state.isRegistred;
 export const getUserData = (state: RootState) => state.user;
 export const getUserOrdersSelector = (state: RootState) => state.userOrders;
+export const getIsUserOrdersLoading = (state: RootState) =>
+  state.isUserOrdersLoading;
+export const getIsIngredientsLoading = (state: RootState) =>
+  state.isIngredientsLoading;
+export const getIsFeedsLoading = (state: RootState) => state.isFeedsLoading;
 
 export const appReducer = appSlice.reducer;
 

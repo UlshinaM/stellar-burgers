@@ -3,22 +3,11 @@ import { useInView } from 'react-intersection-observer';
 
 import { TIngredient, TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  getIngredientsSelector,
-  getIngredients,
-  getIsLoading
-} from '../../services/appSlice';
-import { AppDispatch, RootState } from 'src/services/store';
-import { Preloader } from '@ui';
+import { useSelector } from '../../services/store';
+import { getIngredientsSelector } from '../../services/appSlice';
 //import store from 'src/services/store';
 
 export const BurgerIngredients: FC = () => {
-  /*const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-    dispatch(getIngredients());
-  }, [dispatch]);*/
-
   const ingredients = useSelector(getIngredientsSelector);
 
   /** TODO: взять переменные из стора */

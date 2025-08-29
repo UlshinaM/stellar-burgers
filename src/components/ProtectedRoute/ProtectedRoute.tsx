@@ -1,6 +1,6 @@
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { ProtectedRouteProps } from './type';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/store';
 import { getIsAuthorized, getIsLoading } from '../../services/appSlice';
 import { Preloader } from '@ui';
 

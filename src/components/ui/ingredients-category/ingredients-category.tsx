@@ -2,12 +2,6 @@ import styles from './ingredients-category.module.css';
 import { forwardRef } from 'react';
 import { TIngredientsCategoryUIProps } from './type';
 import { BurgerIngredient } from '@components';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 'src/services/store';
-import { TIngredient } from '@utils-types';
-import { addBun, addIngredient } from '../../../services/appSlice';
-
-//const handleAddIngredient = (ingredient) => {};
 
 export const IngredientsCategoryUI = forwardRef<
   HTMLUListElement,
